@@ -201,14 +201,13 @@ void SardineMode::update()
                 isAnyIt = true;
 
             if (curInfo->isConnected && curInfo->isInSameStage && curInfo->isIt && !mInfo->mIsIt && !isYukimaru && pupDist < 300.f) {
-    if (((PlayerActorHakoniwa*)playerBase)->mDimKeeper->is2DModel == curInfo->is2D && !PlayerFunction::isPlayerDeadStatus(playerBase)) {
-        mInfo->mIsIt = true;
-        mModeTimer->enableTimer();
-        mModeLayout->showPack();
-        Client::sendGamemodePacket();
-    }
+                if (((PlayerActorHakoniwa*)playerBase)->mDimKeeper->is2DModel == curInfo->is2D && !PlayerFunction::isPlayerDeadStatus(playerBase)) {
+                    mInfo->mIsIt = true;
+                    mModeTimer->enableTimer();
+                    mModeLayout->showPack();
 
-
+                    Client::sendGamemodePacket();
+                }
             }
         }
     }
@@ -217,12 +216,12 @@ void SardineMode::update()
 
     // Tin detaching
     if ((PlayerFunction::isPlayerDeadStatus(playerBase) || (highPuppetDistance > pullDistanceMax && mInfo->mIsTetherSnap && mInfo->mIsTether)) && mInfo->mIsIt) {
-    mInfo->mIsIt = false;
-    mModeTimer->disableTimer();
-    mModeLayout->showSolo();
-    Client::sendGamemodePacket();
-}
+        mInfo->mIsIt = false;
+        mModeTimer->disableTimer();
+        mModeLayout->showSolo();
 
+        Client::sendGamemodePacket();
+    }
 
     // Player pulling
     if (highPuppetDistance >= pullDistanceMin && mInfo->mIsIt && farPuppetID != -1 && mInfo->mIsTether) {
@@ -262,14 +261,17 @@ void SardineMode::update()
     }
 
     if (al::isPadTriggerUp(-1) && !al::isPadHoldZL(-1)) {
-    if (!mInfo->mIsIt && mInfo->mIsIt) {  // Logical contradiction, likely a bug
-        mInfo->mIsIt = true;
-        mModeTimer->enableTimer();
-        mModeLayout->showPack();
-    } else {
-        mInfo->mIsIt = false;
-        mModeTimer->disableTimer();
-        mModeLayout->showSolo();
+        if (!mInfo->mIsIt && mInfo->mIsIt) {
+            mInfo->mIsIt = true;
+            mModeTimer->enableTimer();
+            mModeLayout->showPack();
+        } else {
+            mInfo->mIsIt = false;
+            mModeTimer->disableTimer();
+            mModeLayout->showSolo();
+        }
+        Client::sendGamemodePacket();
     }
-    Client::sendGamemodePacket();
+
+    mInfo->mHidingTime = mModeTimer->getTime();
 }
