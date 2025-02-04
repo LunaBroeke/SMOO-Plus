@@ -271,4 +271,5 @@ void SardineMode::update()
     }
     Client::sendGamemodePacket();
 }
+}
 
